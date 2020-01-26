@@ -97,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for(int i = 0; i < stops.length(); i++) {
             LatLng location = new LatLng(busStops.stops[i].stopLat, busStops.stops[i].stopLon);
-            mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + busStops.stops[i].stopCode));
+            mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + " " + busStops.stops[i].stopCode));
         }
     }
 
