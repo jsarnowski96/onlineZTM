@@ -16,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
         mapActivityButton = findViewById(R.id.mapActivityButton);
         mapActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -23,13 +26,10 @@ public class MainActivity extends AppCompatActivity {
                 launchMapActivity();
             }
         });
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
     }
 
     private void launchMapActivity() {
-        Intent intent = new Intent(this, GoogleMap.class);
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 }
