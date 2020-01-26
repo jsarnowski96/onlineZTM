@@ -53,10 +53,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             busStops.stops = new Stop[stops.length()];
             for(int i = 0; i < stops.length(); i++) {
                 busStops.stops[i] = new Stop();
-                busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopName");
+                if(stops.getJSONObject(i).getString("stopName") == "null" && stops.getJSONObject(i).getString("stopCode") == "null") {
+                    busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopDesc");
+                }
+                else {
+                    busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopName");
+                }
                 busStops.stops[i].stopCode = stops.getJSONObject(i).getString("stopCode");
                 busStops.stops[i].stopLat = stops.getJSONObject(i).getDouble("stopLat");
                 busStops.stops[i].stopLon = stops.getJSONObject(i).getDouble("stopLon");
+
             }
             try {
 
@@ -97,7 +103,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for(int i = 0; i < stops.length(); i++) {
             LatLng location = new LatLng(busStops.stops[i].stopLat, busStops.stops[i].stopLon);
-            mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + " " + busStops.stops[i].stopCode));
+            if(busStops.stops[i].stopCode == "null") {
+                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName));
+            }
+            else {
+                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + " " + busStops.stops[i].stopCode));
+            }
+
         }
     }
 
