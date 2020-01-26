@@ -12,6 +12,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,12 +23,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.Buffer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     JSONObject busStopsJson;
+    JSONArray stops;
     JsonTask jsonTask;
+    BusStops busStops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +45,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         jsonTask = new JsonTask();
+        busStops = new BusStops();
+        stops = new JSONArray();
+        try {
+            busStopsJson = jsonTask.execute("https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json").get();
+            stops = busStopsJson.getJSONObject("2020-01-26").getJSONArray("stops");
+            busStops.stops = new Stop[stops.length()];
+            for(int i = 0; i < stops.length(); i++) {
+                busStops.stops[i] = new Stop();
+                busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopName");
+                busStops.stops[i].stopCode = stops.getJSONObject(i).getString("stopCode");
+                busStops.stops[i].stopLat = stops.getJSONObject(i).getDouble("stopLat");
+                busStops.stops[i].stopLon = stops.getJSONObject(i).getDouble("stopLon");
+            }
+            try {
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -59,6 +94,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(tricity).title("Tricity Center mass"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(tricity));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tricity, 15.0f));
+
+        for(int i = 0; i < stops.length(); i++) {
+            LatLng location = new LatLng(busStops.stops[i].stopLat, busStops.stops[i].stopLon);
+            mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + busStops.stops[i].stopCode));
+        }
     }
 
     @Override
@@ -205,7 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected JSONObject doInBackground(String... params){
             HttpURLConnection urlConnection = null;
-            String urlString = "https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json";
+            String urlString = params[0];
             URL url = null;
             try {
                 url = new URL(urlString);
@@ -272,7 +312,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(JSONObject result) {
-            // Do stuff after the operation
+
         }
     }
 
