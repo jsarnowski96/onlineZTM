@@ -11,18 +11,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button mapActivityButton;
+    Button busStopsButton;
+    //Button busGpsLocationButton;
     Button exitButton;
+    Integer actionType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mapActivityButton = findViewById(R.id.mapActivityButton);
-        mapActivityButton.setOnClickListener(new View.OnClickListener() {
+        actionType = 0;
+
+        busStopsButton = findViewById(R.id.busStopsButton);
+        busStopsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                actionType = 1;
                 launchMapActivity();
             }
         });
@@ -34,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        /*busGpsLocationButton = findViewById(R.id.busGpsLocationButton);
+        busGpsLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionType = 2;
+                launchMapActivity();
+            }
+        });
+        */
     }
 
     private void launchMapActivity() {
