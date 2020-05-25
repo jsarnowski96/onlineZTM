@@ -49,7 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stops = new JSONArray();
         try {
             busStopsJson = jsonTask.execute("https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json").get();
-            stops = busStopsJson.getJSONObject("2020-01-26").getJSONArray("stops");
+            stops = busStopsJson.getJSONObject("2020-05-24").getJSONArray("stops");
             busStops.stops = new Stop[stops.length()];
             for(int i = 0; i < stops.length(); i++) {
                 busStops.stops[i] = new Stop();

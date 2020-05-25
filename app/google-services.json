@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "233662722264",
+    "firebase_url": "https://onlineztm-24425.firebaseio.com",
+    "project_id": "onlineztm-24425",
+    "storage_bucket": "onlineztm-24425.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233662722264:android:25be42fc8e58c3187b67ad",
+        "android_client_info": {
+          "package_name": "com.example.onlineztm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233662722264-sskre2eplgdfg09ddf5oqrhldn2r20jo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.onlineztm",
+            "certificate_hash": "75a83040fd962d21cbe03b41f9bce259fbcdc5d2"
+          }
+        },
+        {
+          "client_id": "233662722264-u09pc2a3kpa2almfjhq2qrnokovpo8l1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8nBqiAYOG55VYmQgLDoFdnrMMsdIGhQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233662722264-u09pc2a3kpa2almfjhq2qrnokovpo8l1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
