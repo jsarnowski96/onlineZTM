@@ -15,8 +15,8 @@ Android app parsing JSON from ZTM open data bank and rendering bus stops markers
 
 ## TODO
 - [ ] `TimetableActivity->busStopsSpinner`
-- [ ] `MapsActivity` - extend basic markers with additional actions/set of information regarding current bus stop's coordinates
-- [ ] general optimization of JSON parsing process - one of the issues is related to `TimetableActivity` parsing same JSON input every time when user leaves the activity and re-opens it, since BusStop objects aren't stored in sharedPreferences (at least not yet)
+- [ ] `MapsActivity` - extend basic GM markers with additional actions/set of information regarding current bus stop's coordinates
+- [ ] general optimization of JSON parsing process - one of the issues is related to `TimetableActivity` parsing same JSON input every time when user leaves the activity and re-opens it, since `BusStops` objects cannot be stored in `sharedPreferences` (at least not yet)
 - [ ] minor code refactoring & cleanup
 
 ## Known issues
