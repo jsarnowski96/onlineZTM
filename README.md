@@ -8,6 +8,11 @@ Android app parsing JSON from ZTM open data bank and rendering bus stops markers
 - `TimetableActivity` - parses JSONArray into ArrayList<String> object which is loaded into drop down list (Spinner)
 - `MapsActivity` - initial project's activity parsing JSON and rendering markers based on bus stop's coordinates within Tricity's range
 
+## Current features
+- Firebase authentication module -> user registration and login
+- parse JSON data from Triciti ZTM's API and mark down every bus stop within the agglomeration
+- (WIP) parse JSON data into selectable Spinner and display bus stop-related timetable grouped by bus' number
+
 ## TODO
 - [ ] `TimetableActivity->busStopsSpinner`
 - [ ] `MapsActivity` - extend basic markers with additional actions/set of information regarding current bus stop's coordinates
