@@ -24,7 +24,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.Buffer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
@@ -44,12 +47,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         jsonTask = new JsonTask();
         busStops = new BusStops();
         stops = new JSONArray();
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
         try {
             busStopsJson = jsonTask.execute("https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json").get();
-            stops = busStopsJson.getJSONObject("2020-05-24").getJSONArray("stops");
+            stops = busStopsJson.getJSONObject(df.format(date)).getJSONArray("stops");
             busStops.stops = new Stop[stops.length()];
             for(int i = 0; i < stops.length(); i++) {
                 busStops.stops[i] = new Stop();
@@ -96,17 +104,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         LatLng tricity = new LatLng(54.410240, 18.580600);
-        mMap.addMarker(new MarkerOptions().position(tricity).title("Tricity Center mass"));
+        //mMap.addMarker(new MarkerOptions().position(tricity).title("Tricity Center mass"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(tricity));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tricity, 15.0f));
 
         for(int i = 0; i < stops.length(); i++) {
             LatLng location = new LatLng(busStops.stops[i].stopLat, busStops.stops[i].stopLon);
             if(busStops.stops[i].stopCode == "null") {
-                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName));
+                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName).anchor(0.5f, 0.5f));
             }
             else {
-                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + " " + busStops.stops[i].stopCode));
+                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + " " + busStops.stops[i].stopCode).anchor(0.5f, 0.5f));
             }
 
         }

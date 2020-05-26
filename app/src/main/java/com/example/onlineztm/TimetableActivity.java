@@ -2,10 +2,24 @@ package com.example.onlineztm;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,8 +33,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -32,6 +51,11 @@ public class TimetableActivity extends AppCompatActivity {
     private BusStops busStops;
     private JsonTask jsonTask;
     private ArrayList<String> busStopsStringArray;
+    private Button confirmationButton;
+    private Button cancelButton;
+    private PopupWindow popUp;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +65,68 @@ public class TimetableActivity extends AppCompatActivity {
         busStopSpinner = findViewById(R.id.busStopSpinner);
         busStopsStringArray = new ArrayList<String>();
 
+        /*sharedPreferences = getPreferences(MODE_PRIVATE);
+        if(sharedPreferences.getString("any_field", "default") == null) {
+            getBusStops();
+        }
+        else {
+            Gson gson = new Gson();
+            Map<String,?> allEntries = sharedPreferences.getAll();
+            busStops = new TimetableActivity.BusStops();
+            stops = new JSONArray();
+            for(Map.Entry<String,?> entry : allEntries.entrySet()) {
+                String json = sharedPreferences.getString("busStop" + entry.getKey(), "");
+                busStops = gson.fromJson(json, BusStops.class);
+            }
+        }*/
+
         getBusStops();
 
-        if (getIntent().getBooleanExtra("EXIT", false))
-        {
-            finish();
+        Collections.sort(busStopsStringArray);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, busStopsStringArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        busStopSpinner.setAdapter(adapter);
+
+        busStopSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(TimetableActivity.this, "Selected: " + parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        confirmationButton = findViewById(R.id.confirmationButton);
+        confirmationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(TimetableActivity.this, "Confirmed selection for item: " + busStopSpinner.getSelectedItem(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        /*SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        for(int i = 0; i < busStops.stops.length; i++) {
+            String json = gson.toJson(busStops.stops[i]);
+            editor.putString("busStop" + i, json);
         }
+        editor.commit();*/
     }
 
     public class BusStops {
@@ -264,9 +344,12 @@ public class TimetableActivity extends AppCompatActivity {
         busStops = new TimetableActivity.BusStops();
         stops = new JSONArray();
 
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+
         try {
             busStopsJson = jsonTask.execute("https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json").get();
-            stops = busStopsJson.getJSONObject("2020-05-24").getJSONArray("stops");
+            stops = busStopsJson.getJSONObject(df.format(date)).getJSONArray("stops");
             busStops.stops = new TimetableActivity.Stop[stops.length()];
             for(int i = 0; i < stops.length(); i++) {
                 busStops.stops[i] = new TimetableActivity.Stop();
@@ -291,9 +374,5 @@ public class TimetableActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, busStopsStringArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        busStopSpinner.setAdapter(adapter);
     }
 }

@@ -230,12 +230,12 @@ public class LoginActivity extends AppCompatActivity {
                                     throw task.getException();
                                 } catch (FirebaseAuthInvalidUserException e) {
                                     emailField.setError("User does not exist");
-                                    passwordField.setError("User does not exist");
                                 } catch (FirebaseAuthInvalidCredentialsException e) {
                                     passwordField.setError("Incorrect password");
                                 } catch (Exception e) {
                                     Log.e("LoginUserWithEmail", e.getMessage());
                                 }
+                                Log.e("LoginUserWithEmailEx", "FAILURE", task.getException());
                             }
                         }
                     })
@@ -259,6 +259,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d("AnonymousLogin", "SUCCESS");
                             mUser = mAuth.getCurrentUser();
+                            launchMainActivity();
                         } else {
                             Log.w("AnonymousLogin", "FAILURE", task.getException());
                         }

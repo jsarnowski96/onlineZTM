@@ -15,6 +15,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UserRegistrationActivity extends AppCompatActivity {
@@ -80,8 +84,16 @@ public class UserRegistrationActivity extends AppCompatActivity {
                                 Toast.makeText(UserRegistrationActivity.this, "User registration complete - welcome, " + mUser.getEmail(), Toast.LENGTH_SHORT).show();
                                 launchMainActivity();
                             } else {
-                                Log.w("CreateUserWithEmail", "FAILURE", task.getException());
-                                Toast.makeText(UserRegistrationActivity.this, "You did not enter e-mail and/or password. Try again", Toast.LENGTH_SHORT).show();
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseAuthWeakPasswordException e) {
+                                    passwordField.setError("Use more complex password");
+                                } catch (FirebaseAuthUserCollisionException e) {
+                                    emailField.setError("There is already a user with this e-mail");
+                                } catch (Exception e) {
+                                    Log.e("LoginUserWithEmail", e.getMessage());
+                                }
+                                Log.e("CreateUserWithEmail", "FAILURE", task.getException());
                             }
                         }
                     });

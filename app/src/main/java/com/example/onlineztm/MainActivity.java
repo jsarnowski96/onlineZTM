@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        /*FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
+        FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -96,7 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        mAuth.addAuthStateListener(authListener);*/
+        mAuth.addAuthStateListener(authListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(authListener);
     }
 
     private void launchMapsActivity() {

@@ -14,10 +14,10 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/bg2" />
 
     <TextView
@@ -25,9 +25,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="156dp"
+        android:shadowColor="#000"
+        android:shadowDy="1"
+        android:shadowRadius="2"
         android:text="Timetable"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,13 +39,37 @@
 
     <Spinner
         android:id="@+id/busStopSpinner"
-        android:layout_width="290dp"
-        android:layout_height="31dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@android:drawable/btn_dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timetableTitle" />
+
+    <Button
+        android:id="@+id/confirmationButton"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorAccent"
+        android:text="Confirm"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/busStopSpinner" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/colorAccent"
+        android:text="@android:string/cancel"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmationButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
