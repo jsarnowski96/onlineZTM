@@ -10,7 +10,7 @@ Android app parsing JSON from ZTM open data bank and rendering bus stops markers
 
 ## Current features
 - Firebase authentication module -> user registration and login
-- parse JSON data from Triciti ZTM's API and mark down every bus stop within the agglomeration
+- parse JSON data from Tricity ZTM's API and mark down every bus stop within the agglomeration
 - (WIP) parse JSON data into selectable Spinner and display bus stop-related timetable grouped by bus' number
 
 ## TODO
