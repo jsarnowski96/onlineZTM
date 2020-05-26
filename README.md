@@ -17,3 +17,8 @@ Android app parsing JSON from ZTM open data bank and rendering bus stops markers
 
 ## Screenshots
 
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530910.png" height="400" width="250" />
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530916.png" height="400" width="250" />
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530979.png" height="400" width="250" />
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530914.png" height="400" width="250" />
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530934.png" height="400" width="250" />
