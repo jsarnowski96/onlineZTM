@@ -1,16 +1,11 @@
 package com.example.onlineztm;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.fragment.app.FragmentActivity;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,113 +14,50 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class TimetableActivity extends AppCompatActivity {
 
-    private GoogleMap mMap;
-    JSONObject busStopsJson;
-    JSONArray stops;
-    JsonTask jsonTask;
-    BusStops busStops;
+    private Spinner busStopSpinner;
+    private JSONObject busStopsJson;
+    private JSONArray stops;
+    private BusStops busStops;
+    private JsonTask jsonTask;
+    private ArrayList<String> busStopsStringArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        jsonTask = new JsonTask();
-        busStops = new BusStops();
-        stops = new JSONArray();
-        try {
-            busStopsJson = jsonTask.execute("https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json").get();
-            stops = busStopsJson.getJSONObject("2020-05-24").getJSONArray("stops");
-            busStops.stops = new Stop[stops.length()];
-            for(int i = 0; i < stops.length(); i++) {
-                busStops.stops[i] = new Stop();
-                if(stops.getJSONObject(i).getString("stopName") == "null" && stops.getJSONObject(i).getString("stopCode") == "null") {
-                    busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopDesc");
-                }
-                else {
-                    busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopName");
-                }
-                busStops.stops[i].stopCode = stops.getJSONObject(i).getString("stopCode");
-                busStops.stops[i].stopLat = stops.getJSONObject(i).getDouble("stopLat");
-                busStops.stops[i].stopLon = stops.getJSONObject(i).getDouble("stopLon");
+        setContentView(R.layout.activity_timetable);
 
-            }
-            try {
+        busStopSpinner = findViewById(R.id.busStopSpinner);
+        busStopsStringArray = new ArrayList<String>();
 
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        getBusStops();
+
+        if (getIntent().getBooleanExtra("EXIT", false))
+        {
+            finish();
         }
-
-
-    }
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        LatLng tricity = new LatLng(54.410240, 18.580600);
-        mMap.addMarker(new MarkerOptions().position(tricity).title("Tricity Center mass"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(tricity));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tricity, 15.0f));
-
-        for(int i = 0; i < stops.length(); i++) {
-            LatLng location = new LatLng(busStops.stops[i].stopLat, busStops.stops[i].stopLon);
-            if(busStops.stops[i].stopCode == "null") {
-                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName));
-            }
-            else {
-                mMap.addMarker(new MarkerOptions().position(location).title(busStops.stops[i].stopName + " " + busStops.stops[i].stopCode));
-            }
-
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
     }
 
     public class BusStops {
         private String lastUpdate;
-        private Stop[] stops;
+        private TimetableActivity.Stop[] stops;
 
         public String getLastUpdate() { return lastUpdate; }
         public void setLastUpdate(String value) { this.lastUpdate = value; }
 
-        public Stop[] getStops() { return stops; }
-        public void setStops(Stop[] value) { this.stops = value; }
+        public TimetableActivity.Stop[] getStops() { return stops; }
+        public void setStops(TimetableActivity.Stop[] value) { this.stops = value; }
     }
 
     public class Stop {
@@ -137,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         private String subName;
         private String date;
         private Long zoneID;
-        private ZoneName zoneName;
+        private TimetableActivity.ZoneName zoneName;
         private Long virtual;
         private Long nonpassenger;
         private Long depot;
@@ -176,8 +108,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public Long getZoneID() { return zoneID; }
         public void setZoneID(Long value) { this.zoneID = value; }
 
-        public ZoneName getZoneName() { return zoneName; }
-        public void setZoneName(ZoneName value) { this.zoneName = value; }
+        public TimetableActivity.ZoneName getZoneName() { return zoneName; }
+        public void setZoneName(TimetableActivity.ZoneName value) { this.zoneName = value; }
 
         public Long getVirtual() { return virtual; }
         public void setVirtual(Long value) { this.virtual = value; }
@@ -235,7 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return null;
         }
 
-        public static ZoneName forValue(String value) throws IOException {
+        public static TimetableActivity.ZoneName forValue(String value) throws IOException {
             if (value.equals("Gda\u0144sk")) return GDASK;
             if (value.equals("Gdynia")) return GDYNIA;
             if (value.equals("Kolbudy")) return KOLBUDY;
@@ -254,7 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         @Override
-        protected JSONObject doInBackground(String... params){
+        protected JSONObject doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
             String urlString = params[0];
             URL url = null;
@@ -273,8 +205,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } catch (ProtocolException e) {
                 e.printStackTrace();
             }
-            urlConnection.setReadTimeout(10000 /* milliseconds */ );
-            urlConnection.setConnectTimeout(15000 /* milliseconds */ );
+            urlConnection.setReadTimeout(10000 /* milliseconds */);
+            urlConnection.setConnectTimeout(15000 /* milliseconds */);
             try {
                 urlConnection.connect();
             } catch (IOException e) {
@@ -327,5 +259,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-}
+    private void getBusStops() {
+        jsonTask = new TimetableActivity.JsonTask();
+        busStops = new TimetableActivity.BusStops();
+        stops = new JSONArray();
 
+        try {
+            busStopsJson = jsonTask.execute("https://ckan.multimediagdansk.pl/dataset/c24aa637-3619-4dc2-a171-a23eec8f2172/resource/4c4025f0-01bf-41f7-a39f-d156d201b82b/download/stops.json").get();
+            stops = busStopsJson.getJSONObject("2020-05-24").getJSONArray("stops");
+            busStops.stops = new TimetableActivity.Stop[stops.length()];
+            for(int i = 0; i < stops.length(); i++) {
+                busStops.stops[i] = new TimetableActivity.Stop();
+                if(stops.getJSONObject(i).getString("stopName") == "null" && stops.getJSONObject(i).getString("stopCode") == "null") {
+                    busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopDesc");
+                }
+                else {
+                    busStops.stops[i].stopName = stops.getJSONObject(i).getString("stopName");
+                }
+                busStopsStringArray.add(busStops.stops[i].stopName.toString());
+            }
+            try {
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, busStopsStringArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        busStopSpinner.setAdapter(adapter);
+    }
+}

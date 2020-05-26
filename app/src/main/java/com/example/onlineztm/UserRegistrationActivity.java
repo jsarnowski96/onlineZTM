@@ -9,17 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.onlineztm.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class UserRegistrationActivity extends AppCompatActivity {
 
@@ -36,9 +32,9 @@ public class UserRegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
-
         setContentView(R.layout.activity_user_registration);
+
+        mAuth = FirebaseAuth.getInstance();
 
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
@@ -55,7 +51,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(emailField != null && passwordField != null && emailField.getText().toString() != "" && passwordField.getText().toString() != "") {
+                if(!emailField.getText().toString().matches("") && !passwordField.getText().toString().matches("")) {
                     email = emailField .getText().toString().trim();
                     password = passwordField .getText().toString().trim();
                     registerUser(email, password);
@@ -69,16 +65,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        mUser = mAuth.getCurrentUser();
         super.onStart();
-        updateUI(mUser);
-    }
-
-    private void updateUI(FirebaseUser account) {
-        if(account != null){
-            Toast.makeText(this,"You are already logged in",Toast.LENGTH_LONG).show();
-            //startActivity(new Intent(this, MainActivity.class));
-        }
     }
 
     private void registerUser(String email, String password) {
@@ -95,7 +82,6 @@ public class UserRegistrationActivity extends AppCompatActivity {
                             } else {
                                 Log.w("CreateUserWithEmail", "FAILURE", task.getException());
                                 Toast.makeText(UserRegistrationActivity.this, "You did not enter e-mail and/or password. Try again", Toast.LENGTH_SHORT).show();
-                                updateUI(null);
                             }
                         }
                     });
@@ -107,6 +93,8 @@ public class UserRegistrationActivity extends AppCompatActivity {
 
     private void launchMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
         startActivity(intent);
     }
 }

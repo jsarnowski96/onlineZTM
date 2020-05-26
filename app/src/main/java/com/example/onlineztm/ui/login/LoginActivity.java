@@ -34,6 +34,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -45,25 +49,23 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordField;
     private String email;
     private String password;
+    private String userEmail;
     private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-
         setContentView(R.layout.activity_login);
-
-        emailField = findViewById(R.id.emailField);
-        passwordField = findViewById(R.id.passwordField);
 
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText emailField = findViewById(R.id.emailField);
-        final EditText passwordField = findViewById(R.id.passwordField);
+        mAuth = FirebaseAuth.getInstance();
+
+        emailField = findViewById(R.id.emailField);
+        passwordField = findViewById(R.id.passwordField);
+
         final Button loginButton = findViewById(R.id.loginButton);
         final Button skipLoginButton = findViewById(R.id.skipLoginButton);
         final Button registerButton = findViewById(R.id.registerButton);
@@ -97,12 +99,10 @@ public class LoginActivity extends AppCompatActivity {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
+                    Log.i("LoginSuccessful", "TRUE");
                     updateUI(mUser);
                 }
                 setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
-                //finish();
             }
         });
 
@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                         passwordField.getText().toString());
             }
         };
+
         emailField.addTextChangedListener(afterTextChangedListener);
         passwordField.addTextChangedListener(afterTextChangedListener);
         passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -141,14 +142,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                if(emailField.getText().toString() != "" && passwordField.getText().toString() != "" && emailField != null && passwordField != null) {
-                    email = emailField .getText().toString().trim();
-                    password = passwordField .getText().toString().trim();
+                if (!emailField.getText().toString().matches("") && !passwordField.getText().toString().matches("")) {
+                    email = emailField.getText().toString().trim();
+                    password = passwordField.getText().toString().trim();
                     loginViewModel.login(email,
                             password);
                     loginUser(email, password);
-                }
-                else {
+                } else {
                     Toast.makeText(LoginActivity.this, "You did not enter e-mail and/or password. Try again", Toast.LENGTH_SHORT).show();
                 }
                 loadingProgressBar.setVisibility(View.GONE);
@@ -159,47 +159,55 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 anonymousAccess();
-                launchMainActivity();
             }
         });
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchRegisterActivity();
             }
         });
+
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
-        if (getIntent().getBooleanExtra("EXIT", false))
-        {
-            finish();
-        }
     }
 
-    private void updateUI(FirebaseUser account) {
-        if(account != null){
-            startActivity(new Intent(this, MainActivity.class));
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
+    private void updateUI(FirebaseUser user) {
+        if(user != null) {
+            launchMainActivity();
+        }
+    }
+
     private void launchMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, com.example.onlineztm.MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("EXIT", true);
         startActivity(intent);
     }
 
     private void launchRegisterActivity() {
-        Intent intent = new Intent(this, UserRegistrationActivity.class);
+        Intent intent = new Intent(LoginActivity.this, com.example.onlineztm.UserRegistrationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
         startActivity(intent);
     }
 
@@ -210,44 +218,33 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                Log.d("LoginUserWithEmail", "SUCCESS");
                                 mUser = mAuth.getCurrentUser();
-                                String userId = mUser.getUid();
-                                String userEmail = emailField.getText().toString().trim();
+                                userEmail = mUser.getEmail();
                                 sharedPreferences = getPreferences(MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("FireBaseUid", userId);
-                                editor.putString("UserEmail", mUser.getEmail());
+                                editor.putString("UserEmail", userEmail);
                                 editor.commit();
                             } else {
-                                Log.w("SignInWithEmail", "FAILURE", task.getException());
-                                Toast.makeText(LoginActivity.this, "Authentication failed - check your e-mail or password",
-                                        Toast.LENGTH_SHORT).show();
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseAuthInvalidUserException e) {
+                                    emailField.setError("User does not exist");
+                                    passwordField.setError("User does not exist");
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    passwordField.setError("Incorrect password");
+                                } catch (Exception e) {
+                                    Log.e("LoginUserWithEmail", e.getMessage());
+                                }
                             }
                         }
-
                     })
                     .addOnFailureListener(this, new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d("LoginUserException", e.toString());
+                            Log.d("LoginUserWithEmail", e.toString());
                         }
                     });
-
-            /*FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth mAuth) {
-                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                    if (firebaseUser != null) {
-                        String userId = firebaseUser.getUid();
-                        String userEmail = emailField.getText().toString().trim();
-                        sharedPreferences = getPreferences(MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("FireBaseUid", userId);
-                        editor.putString("UserEmail", userEmail);
-                        editor.commit();
-                    }
-                }
-            };*/
         }
         else {
             Toast.makeText(LoginActivity.this, "You did not enter e-mail and/or password. Try again", Toast.LENGTH_SHORT).show();
@@ -260,16 +257,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("signInAnonymously", "SUCCESS");
-                            //mAuth = FirebaseAuth.getInstance();
+                            Log.d("AnonymousLogin", "SUCCESS");
                             mUser = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "Signed as Anonymous", Toast.LENGTH_SHORT).show();
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("signInAnonymously", "FAILURE", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed",
-                                    Toast.LENGTH_SHORT).show();
+                            Log.w("AnonymousLogin", "FAILURE", task.getException());
                         }
                     }
                 });

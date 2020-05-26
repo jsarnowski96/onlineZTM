@@ -8,6 +8,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UserRegistrationActivity"></activity>
+        <activity android:name="com.example.onlineztm.TimetableActivity" ></activity>
+        <activity android:name="com.example.onlineztm.UserRegistrationActivity" />
+        <activity android:name="com.example.onlineztm.MainActivity" ></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -25,23 +28,16 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.onlineztm.MainActivity" />
-        </activity>
-        <activity android:name=".MainActivity" />
+                android:name="com.google.android.geo.API_KEY"
+                android:value="@string/google_maps_key" />
         <activity
-            android:name=".ui.login.LoginActivity">
+            android:name="com.example.onlineztm.MapsActivity"
+            android:label="@string/title_activity_maps">
+        </activity>
+        <activity android:name="com.example.onlineztm.ui.login.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
