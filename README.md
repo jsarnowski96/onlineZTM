@@ -14,29 +14,25 @@ Android app parsing JSON from ZTM open data bank and rendering bus stops markers
 - [ ] general optimization of JSON parsing process - one of the issues is related to `TimetableActivity` parsing same JSON input every time when user leaves the activity and re-opens it, since BusStop objects aren't stored in sharedPreferences (at least not yet)
 - [ ] - minor code refactoring & cleanup
 
+## Known issues
+Some virtual machines have some issues with the application, thus some of its feature may not work as intended - launching onlineZTM on physical device is the most reliable way of testing it.
 
 ## Screenshots
 
 ### Login Screen
-
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530910.png" height="400" width="250" />
 
 ### User Registration Activity
-
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530916.png" height="400" width="250" />
 
 ### Main Activity after successfull login
-
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530979.png" height="400" width="250" />
 
 ### Google Maps Activity
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530914.png" height="400" width="250"/>
 
 ### Timetable Activity
-
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530934.png" height="400" width="250"/>
 
 ### Screen capture
-
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/untitled.gif" height="400" width="250" />
-
