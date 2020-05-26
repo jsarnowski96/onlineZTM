@@ -18,7 +18,7 @@ Android app parsing JSON from ZTM open data bank and rendering bus stops markers
 Certain virtual machines struggle with the application, thus some of its features may not work as intended - launching onlineZTM on physical device is the most reliable way of testing it. Currently the only affected modules seem to be `LoginActivity` and `TimetableActivity`.
 
 Symptoms:
-- user cannot log in as Anonymous user (though the job is run correctly - a possible workaround is to hit "Sign in" button, but user will be greeted with "Welcome back, null")
+- user cannot log in as Anonymous user (though the job is run correctly in the background- a possible workaround is to hit "Sign in" button, but user will be greeted with "Welcome back, null" - most likely a UI-related bug)
 - `TimetableActivity` may be unresponsive and/or user is immidiately kicked back to `MainActivity` screen (no available workaround so far)
 
 ## Screenshots
