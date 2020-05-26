@@ -21,6 +21,8 @@ Symptoms:
 - user cannot log in as Anonymous user (though the job is run correctly in the background- a possible workaround is to hit "Sign in" button, but user will be greeted with "Welcome back, null" - most likely a UI-related bug)
 - `TimetableActivity` may be unresponsive and/or user is immidiately kicked back to `MainActivity` screen (no available workaround so far)
 
+Apart from that, sometimes Toast message is triggered more than once - most likely performance-related issue, on physical device it's almost non-existing.
+
 ## Screenshots
 
 ### Login Screen
