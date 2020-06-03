@@ -40,10 +40,10 @@ Apart from that, sometimes Toast message is triggered more than once - most like
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530979.png" height="400" width="250" />
 
 ### Google Maps Activity
-<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530914.png" height="400" width="250"/>
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590531014.png" height="400" width="250"/>
 
 ### Timetable Activity
-<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590530934.png" height="400" width="250"/>
+<img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/Screenshot_1590531034.png" height="400" width="250"/>
 
 ### Screen capture
 <img src="https://github.com/jsarnowski96/onlineZTM/blob/master/screenshots/untitled.gif" height="400" width="250" />
